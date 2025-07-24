@@ -9,20 +9,31 @@ const Countries = ({ handleCountryChange }) => {
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    const fetchAPI = async () => {
-      setCountries(await fetchCountries());
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch('/airports.json');  
+        const data = await response.json();
+        setCountries(data);
+        console.log(data, 'data')
+      } catch (error) {
+        console.error('Error loading airports:', error);
+      }
     };
 
-    fetchAPI();
+    fetchCountries();
   }, []);
 
   return (
     <FormControl className={styles.formControl}>
-      <NativeSelect defaultValue="" onChange={(e) => handleCountryChange(e.target.value)}>
-        <option value="">United States</option>
-        {countries.map((country, i) => <option key={i} value={country}>{country}</option>)}
-      </NativeSelect>
-    </FormControl>
+    <NativeSelect defaultValue="" onChange={(e) => handleCountryChange(e.target.value)}>
+      <option value="">Выберите город</option>
+      {countries.map((airport, i) => (
+        <option key={i} value={airport.IATA}>
+          {airport.City} ({airport.Airport})
+        </option>
+      ))}
+    </NativeSelect>
+  </FormControl>
   );
 };
 
