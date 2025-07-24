@@ -1,5 +1,5 @@
 {
-  "name": "corona_app",
+  "name": "flight_stats",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
