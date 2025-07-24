@@ -1,39 +1,87 @@
 import React, { useState, useEffect } from 'react';
-import { NativeSelect, FormControl } from '@material-ui/core';
+import axios from 'axios';
 
-import { fetchCountries } from '../../api';
+const cellStyle = {
+  padding: '12px 16px',
+  textAlign: 'left',
+  borderBottom: '1px solid #e0e0e0',
+};
 
-import styles from './CountryPicker.module.css';
-
-const Countries = ({ handleCountryChange }) => {
-  const [countries, setCountries] = useState([]);
+const Countries = () => {
+  const [rules, setRules] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCountries = async () => {
+    const fetchRules = async () => {
       try {
-        const response = await fetch('/airports.json');  
-        const data = await response.json();
-        setCountries(data);
-        console.log(data, 'data')
-      } catch (error) {
-        console.error('Error loading airports:', error);
+        const response = await axios.get('http://localhost:8000/delay-rules/top');
+        setRules(response.data);
+      } catch (err) {
+        setError('Ошибка при получении правил');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCountries();
+    fetchRules();
   }, []);
 
+  if (loading) return <div style={{ padding: '20px' }}>Загрузка правил...</div>;
+  if (error) return <div style={{ padding: '20px', color: 'red' }}>{error}</div>;
+
   return (
-    <FormControl className={styles.formControl}>
-    <NativeSelect defaultValue="" onChange={(e) => handleCountryChange(e.target.value)}>
-      <option value="">Выберите город</option>
-      {countries.map((airport, i) => (
-        <option key={i} value={airport.IATA}>
-          {airport.City} ({airport.Airport})
-        </option>
-      ))}
-    </NativeSelect>
-  </FormControl>
+    <div style={{ padding: '30px', fontFamily: 'Arial, sans-serif' }}>
+      <h2 style={{
+        fontSize: '24px',
+        marginBottom: '20px',
+        borderBottom: '2px solid #ddd',
+        paddingBottom: '10px',
+        color: '#333',
+      }}>
+        Неочевидные признаки задержки рейсов
+      </h2>
+
+      <div style={{
+        overflowX: 'auto',
+        backgroundColor: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+      }}>
+        <table style={{
+          width: '100%',
+          borderCollapse: 'collapse',
+          minWidth: '600px',
+        }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f9fafb', color: '#444' }}>
+              <th style={cellStyle}>Условие</th>
+              <th style={cellStyle}>Поддержка</th>
+              <th style={cellStyle}>Достоверность</th>
+              <th style={cellStyle}>Подъем</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rules.map((rule, index) => (
+              <tr
+                key={index}
+                style={{
+                  backgroundColor: index % 2 === 0 ? '#fff' : '#fafafa',
+                  transition: 'background-color 0.3s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#f0f8ff')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#fff' : '#fafafa')}
+              >
+                <td style={cellStyle}>{rule.rule}</td>
+                <td style={cellStyle}>{rule.support.toFixed(3)}</td>
+                <td style={cellStyle}>{rule.confidence.toFixed(3)}</td>
+                <td style={cellStyle}>{rule.lift.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 

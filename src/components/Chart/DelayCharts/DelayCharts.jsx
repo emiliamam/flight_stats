@@ -86,7 +86,7 @@ const DelayCharts = () => {
             responsive: true,
             plugins: { legend: { display: false } },
             scales: {
-              y: { beginAtZero: true, title: { display: true, text: 'Количество отмен' } },
+              y: { beginAtZero: true, min: 0, title: { display: true, text: 'Количество отмен' } },
               x: { title: { display: true, text: 'Авиакомпания' } },
             },
           }}
@@ -102,7 +102,8 @@ const DelayCharts = () => {
               </tr>
             </thead>
             <tbody>
-              {cancellationsSorted.map((item, i) => (
+            
+              {cancellationsSorted.filter(item => item.cancellations >= 0).map((item, i) => (
                 <tr key={i} style={{ textAlign: 'center' }}>
                   <td style={tdStyle}>{item.airlines}</td>
                   <td style={tdStyle}>{item.cancellations}</td>
