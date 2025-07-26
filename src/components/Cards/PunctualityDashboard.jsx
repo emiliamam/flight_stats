@@ -28,7 +28,7 @@ const PunctualityDashboard = () => {
 
   useEffect(() => {
     // Получаем последние 500 рейсов, например
-    fetch('http://localhost:8000/flights?limit=500')
+    fetch('/api/flights?limit=500')
       .then(res => res.json())
       .then(data => {
         setFlights(data);

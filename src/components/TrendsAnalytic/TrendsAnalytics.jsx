@@ -9,17 +9,17 @@ const TrendsAnalytics = () => {
 
   useEffect(() => {
     // Замените URL на ваши реальные эндпоинты
-    fetch('http://localhost:8000/punctuality_trend')
+    fetch('/api/punctuality_trend')
       .then(res => res.json())
       .then(data => setPunctualityTrendData(data))
       .catch(console.error);
 
-    fetch('http://localhost:8000/delay_histogram')
+    fetch('/api/delay_histogram')
       .then(res => res.json())
       .then(data => setDelayHistogramData(data))
       .catch(console.error);
 
-    fetch('http://localhost:8000/cancellations_distribution')
+    fetch('/api/cancellations_distribution')
       .then(res => res.json())
       .then(data => setCancellationsData(data))
       .catch(console.error);

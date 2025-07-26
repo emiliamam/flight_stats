@@ -9,11 +9,11 @@ const DelayCharts = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const delayResponse = await fetch('http://localhost:8000/delay_histogram');
+        const delayResponse = await fetch('/api/delay_histogram');
         const delayJson = await delayResponse.json();
 
         console.log(delayJson, 'delayJson')
-        const cancellationsResponse = await fetch('http://localhost:8000/cancellations_distribution');
+        const cancellationsResponse = await fetch('/api/cancellations_distribution');
         const cancellationsJson = await cancellationsResponse.json();
 
         setDelayData(delayJson[0]); // первый объект с гистограммой задержек

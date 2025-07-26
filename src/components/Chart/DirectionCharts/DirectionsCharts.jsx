@@ -1,22 +1,32 @@
 import React, { useState, useMemo } from 'react';
 import { Pie } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  Title,
-} from 'chart.js';
 
 
 const DirectionsChart = ({ directionData }) => {
   const [displayCount, setDisplayCount] = useState(10);
+  const [sortKey, setSortKey] = useState(null);
+  const [sortOrder, setSortOrder] = useState('desc');
+
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(key);
+      setSortOrder('desc');
+    }
+  };
 
   const sortedDirections = useMemo(() => {
-    return [...directionData]
-      .sort((a, b) => b.total_flights - a.total_flights)
-      .slice(0, displayCount);
-  }, [directionData, displayCount]);
+    const sorted = [...directionData];
+    if (sortKey) {
+      sorted.sort((a, b) => {
+        const valA = a[sortKey];
+        const valB = b[sortKey];
+        return sortOrder === 'asc' ? valA - valB : valB - valA;
+      });
+    }
+    return sorted.slice(0, displayCount);
+  }, [directionData, sortKey, sortOrder, displayCount]);
 
   const pieData = useMemo(() => {
     return {
@@ -34,9 +44,8 @@ const DirectionsChart = ({ directionData }) => {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2 style={{ textAlign: 'center' }}>
-        Анализ направлений рейсов
-      </h2>
+      <h2 style={{ textAlign: 'center' }}>Анализ направлений рейсов</h2>
+
       <div style={{ textAlign: 'center', padding: 20 }}>
         <input
           type="range"
@@ -48,16 +57,25 @@ const DirectionsChart = ({ directionData }) => {
         />
         <div>{displayCount} направлений</div>
       </div>
+
       {/* 🔹 Таблица */}
       <div style={{ overflowX: 'auto', marginBottom: 30 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead style={{ backgroundColor: '#f0f0f0' }}>
             <tr>
               <th style={thStyle}>Направление</th>
-              <th style={thStyle}>Рейсов</th>
-              <th style={thStyle}>Пунктуальность (%)</th>
-              <th style={thStyle}>Ср. задержка (мин)</th>
-              <th style={thStyle}>Без отправления</th>
+              <th style={thStyle} onClick={() => handleSort('total_flights')}>
+                Рейсов {sortKey === 'total_flights' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+              </th>
+              <th style={thStyle} onClick={() => handleSort('on_time_percentage')}>
+                Пунктуальность (%) {sortKey === 'on_time_percentage' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+              </th>
+              <th style={thStyle} onClick={() => handleSort('avg_delay_minutes')}>
+                Ср. задержка (мин) {sortKey === 'avg_delay_minutes' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+              </th>
+              <th style={thStyle} onClick={() => handleSort('missing_departure_count')}>
+                Без отправления {sortKey === 'missing_departure_count' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -74,10 +92,7 @@ const DirectionsChart = ({ directionData }) => {
         </table>
       </div>
 
-      {/* 🔹 Ползунок */}
-    
-
-      {/* 🔹 Pie chart */}
+      {/* 🔸 Круговая диаграмма */}
       <div style={{ height: 500 }}>
         <Pie
           data={pieData}
@@ -105,6 +120,7 @@ const thStyle = {
   padding: '8px 12px',
   border: '1px solid #ccc',
   fontWeight: 'bold',
+  cursor: 'pointer'
 };
 
 const tdStyle = {

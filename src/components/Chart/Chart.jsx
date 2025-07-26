@@ -12,17 +12,17 @@ const Analytics = () => {
   const [displayCount, setDisplayCount] = useState(10);
 
   useEffect(() => {
-    fetch('http://localhost:8000/get_top3')
+    fetch('/api/get_top3')
       .then(res => res.json())
       .then(data => setTop3Data(data))
       .catch(console.error);
 
-    fetch('http://localhost:8000/get_all_direction')
+    fetch('/api/get_all_direction')
       .then(res => res.json())
       .then(data => setDirectionData(data))
       .catch(console.error);
 
-    fetch('http://localhost:8000/get_airline_punctuality')
+    fetch('/api/get_airline_punctuality')
       .then(res => res.json())
       .then(data => setPunctualityData(data))
       .catch(console.error);
