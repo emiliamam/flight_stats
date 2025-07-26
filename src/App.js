@@ -20,7 +20,7 @@ class App extends React.Component {
   }
   async componentDidMount() {
     try {
-      const response = await fetch('http://localhost:8000/get_airports');
+      const response = await fetch('/api/get_airports');
       const airports = await response.json();
 
       console.log(airports, 'airports')

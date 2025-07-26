@@ -12,17 +12,17 @@ const Analytics = () => {
   const [displayCount, setDisplayCount] = useState(10);
 
   useEffect(() => {
-    fetch('http://localhost:8000/get_top3')
+    fetch('/api/get_top3')
       .then(res => res.json())
       .then(data => setTop3Data(data))
       .catch(console.error);
 
-    fetch('http://localhost:8000/get_all_direction')
+    fetch('/api/get_all_direction')
       .then(res => res.json())
       .then(data => setDirectionData(data))
       .catch(console.error);
 
-    fetch('http://localhost:8000/get_airline_punctuality')
+    fetch('/api/get_airline_punctuality')
       .then(res => res.json())
       .then(data => setPunctualityData(data))
       .catch(console.error);
@@ -32,8 +32,6 @@ const Analytics = () => {
   console.log(directionData, 'directionData')
   console.log(punctualityData, 'punctualityData')
 
-  // 1. Топ 3 авиакомпании - Bar chart
-  // Топ 3 авиакомпании
 const top3ChartData = {
   labels: top3Data.map(a => a.airline_name || a['Авиакомпания']),
   datasets: [
@@ -50,7 +48,6 @@ const top3ChartData = {
   ],
 };
 
-// Направления - ограничим топ-10
 const topDirections = [...directionData]
   .sort((a, b) => b.total_flights - a.total_flights)
   .slice(0, 10);
@@ -90,7 +87,6 @@ const topDirections = [...directionData]
     }
   };
   
-// Пунктуальность - если даты нет, просто покажем среднюю пунктуальность по авиакомпаниям
 const airlines = [...new Set(punctualityData.map(d => d['Авиакомпания']))];
 
 const punctualityChartData = {
