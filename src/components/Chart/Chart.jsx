@@ -32,8 +32,6 @@ const Analytics = () => {
   console.log(directionData, 'directionData')
   console.log(punctualityData, 'punctualityData')
 
-  // 1. Топ 3 авиакомпании - Bar chart
-  // Топ 3 авиакомпании
 const top3ChartData = {
   labels: top3Data.map(a => a.airline_name || a['Авиакомпания']),
   datasets: [
@@ -50,7 +48,6 @@ const top3ChartData = {
   ],
 };
 
-// Направления - ограничим топ-10
 const topDirections = [...directionData]
   .sort((a, b) => b.total_flights - a.total_flights)
   .slice(0, 10);
@@ -90,7 +87,6 @@ const topDirections = [...directionData]
     }
   };
   
-// Пунктуальность - если даты нет, просто покажем среднюю пунктуальность по авиакомпаниям
 const airlines = [...new Set(punctualityData.map(d => d['Авиакомпания']))];
 
 const punctualityChartData = {

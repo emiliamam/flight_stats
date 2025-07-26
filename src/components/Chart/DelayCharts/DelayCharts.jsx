@@ -16,8 +16,8 @@ const DelayCharts = () => {
         const cancellationsResponse = await fetch('/api/cancellations_distribution');
         const cancellationsJson = await cancellationsResponse.json();
 
-        setDelayData(delayJson[0]); // первый объект с гистограммой задержек
-        setCancellationsData(cancellationsJson); // массив с отменами по авиакомпаниям
+        setDelayData(delayJson[0]);
+        setCancellationsData(cancellationsJson);
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
       } finally {
@@ -30,7 +30,6 @@ const DelayCharts = () => {
   if (loading) return <p>Загрузка данных...</p>;
   if (!delayData || !cancellationsData) return <p>Нет данных для отображения</p>;
 
-  // Формируем данные для графика задержек
   const delayLabels = Object.keys(delayData);
   const delayCounts = Object.values(delayData);
 
@@ -45,7 +44,6 @@ const DelayCharts = () => {
     ],
   };
 
-  // Данные для отмен — сортируем по убыванию количества
   const cancellationsSorted = [...cancellationsData].sort((a, b) => b.cancellations - a.cancellations);
 
   const cancellationsChartData = {

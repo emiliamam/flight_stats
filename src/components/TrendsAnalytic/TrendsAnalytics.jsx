@@ -8,7 +8,6 @@ const TrendsAnalytics = () => {
   const [cancellationsData, setCancellationsData] = useState([]);
 
   useEffect(() => {
-    // Замените URL на ваши реальные эндпоинты
     fetch('/api/punctuality_trend')
       .then(res => res.json())
       .then(data => setPunctualityTrendData(data))
@@ -25,9 +24,6 @@ const TrendsAnalytics = () => {
       .catch(console.error);
   }, []);
 
-  // --- Формируем данные для графиков ---
-
-  // 1. Тренд изменения пунктуальности (Line)
   const dates = Array.from(new Set(punctualityTrendData.map(d => d.date))).sort();
   const airlines = Array.from(new Set(punctualityTrendData.map(d => d.airline)));
 
@@ -46,8 +42,6 @@ const TrendsAnalytics = () => {
     datasets: punctualityTrendDatasets,
   };
 
-  // 2. Гистограмма задержек (Bar)
-  // Предполагаем, что delayHistogramData = [{ delayRange: "0-10", count: 123 }, ...]
   const delayLabels = delayHistogramData.map(d => d.delayRange);
   const delayCounts = delayHistogramData.map(d => d.count);
 
@@ -62,8 +56,6 @@ const TrendsAnalytics = () => {
     ],
   };
 
-  // 3. Круговая диаграмма отмен (Pie)
-  // Предполагаем cancellationsData = [{ airline: 'Аэрофлот', cancellations: 20 }, ...]
   const cancellationLabels = cancellationsData.map(d => d.airline);
   const cancellationCounts = cancellationsData.map(d => d.cancellations);
 
@@ -155,7 +147,6 @@ const TrendsAnalytics = () => {
   );
 };
 
-// Красивые кнопки — простая функция для стилей
 const buttonStyle = (active) => ({
   marginRight: 10,
   padding: '8px 16px',

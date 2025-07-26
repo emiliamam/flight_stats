@@ -2,15 +2,13 @@ import React, { useState, useMemo } from 'react';
 import { Bar } from 'react-chartjs-2';
 
 const PunctualityChartWithTable = ({ data }) => {
-  const [minFlights, setMinFlights] = useState(1000); // фильтр по мин. кол-ву рейсов
+  const [minFlights, setMinFlights] = useState(1000);
 
-  // Фильтруем данные по minFlights
   const filteredData = useMemo(() => {
     if (!Array.isArray(data)) return [];
     return data.filter(item => item['Количество рейсов'] >= minFlights);
   }, [data, minFlights]);
 
-  // Данные для графика — отображаем пунктуальность по отправлению
   const chartData = useMemo(() => {
     return {
       labels: filteredData.map(item => item.Авиакомпания),

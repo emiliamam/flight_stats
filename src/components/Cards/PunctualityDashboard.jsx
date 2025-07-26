@@ -27,7 +27,6 @@ const PunctualityDashboard = () => {
   const [delayStats, setDelayStats] = useState([]);
 
   useEffect(() => {
-    // Получаем последние 500 рейсов, например
     fetch('/api/flights?limit=500')
       .then(res => res.json())
       .then(data => {
@@ -40,13 +39,11 @@ const PunctualityDashboard = () => {
     console.log(flights)
     if (!flights.length) return;
 
-    // Подсчёт категорий задержек
     let onTime = 0;
     let delayed = 0;
     let canceled = 0;
     let inAir = 0;
 
-    // Для динамики — сгруппируем по часу планового вылета
     const delayByHour = {};
 
     flights.forEach(flight => {
@@ -59,12 +56,10 @@ const PunctualityDashboard = () => {
         delayed++;
       }
 
-      // В воздухе — если есть факт вылета, но нет прилёта
       if (flight.fact_departure && !flight.fact_arrival) {
         inAir++;
       }
 
-      // Для динамики по времени — час планового вылета
       if (flight.plan_departure) {
         const dt = new Date(flight.plan_departure);
         const hourStr = dt.getHours().toString().padStart(2, '0') + ':00';
@@ -82,7 +77,6 @@ const PunctualityDashboard = () => {
       }
     });
 
-    // Создаём массив для графика, отсортируем по времени
     const delayStatsArr = Object.entries(delayByHour)
       .sort((a, b) => a[0].localeCompare(b[0]))
       .map(([time, counts]) => ({

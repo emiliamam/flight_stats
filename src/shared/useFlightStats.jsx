@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Статичный список IATA-кодов российских аэропортов (пример)
 const RUSSIAN_AIRPORTS = ['SVO', 'DME', 'VKO', 'LED', 'AER', 'KZN', 'SVX', 'ROV', 'UFA', 'KGD', 'OVB', 'CEK', 'MRV', 'NJC', 'KRR', 'OMS', 'GOJ', 'KUF', 'BQS', 'UUS', 'VVO', 'KJA', 'IKT'];
 
 export default function useFlightStats() {
@@ -18,8 +17,7 @@ export default function useFlightStats() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Запрос данных за сегодня
-        const today = new Date().toISOString().split('T')[0]; // 2025-07-24
+        const today = new Date().toISOString().split('T')[0];
         let allFlights = [];
         let offset = 0;
         const limit = 100;
@@ -38,7 +36,6 @@ export default function useFlightStats() {
           offset += limit;
         } while (offset < pagination.total);
 
-        // 2. Фильтрация российских рейсов
         const russianFlights = allFlights.filter(flight => 
           RUSSIAN_AIRPORTS.includes(flight.departure.iata) || 
           RUSSIAN_AIRPORTS.includes(flight.arrival.iata)
@@ -46,7 +43,6 @@ export default function useFlightStats() {
 
         console.log(russianFlights, 'russianFlights')
 
-        // 3. Статистика по часам
         const hourlyStats = Array(24).fill().map((_, i) => ({
           hour: i,
           onTime: 0,
@@ -72,12 +68,10 @@ export default function useFlightStats() {
           }
         });
 
-        // 4. Рейсы в воздухе
         const currentFlights = russianFlights.filter(
           flight => flight.flight_status === 'active'
         ).length;
 
-        // 5. Обновление состояния
         setStats({ hourlyStats, currentFlights });
         setLoading(false);
         
